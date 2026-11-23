@@ -1,0 +1,24 @@
+# @package model
+# The AllTracker network (Net(seqlen=16) with its defaults), as in alltracker.pth.
+_target_: robotrack.alltracker.Net
+seqlen: 16
+dim: 128
+hdim: 128
+use_attn: true
+use_mixer: false
+use_conv: false
+use_convb: false
+use_basicencoder: false
+no_space: false
+no_time: false
+use_sinmotion: false
+use_relmotion: false
+use_sinrelmotion: false
+use_feats8: false
+no_split: false
+no_ctx: false
+full_split: false
+num_blocks: 3
+corr_radius: 4
+corr_levels: 5
+init_weights: true

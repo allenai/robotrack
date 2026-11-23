@@ -1,0 +1,72 @@
+# @package data
+# 50% Kubric + 50% RoboTrack-15M, the RoboTracker mix: four groups, one per GPU pair on 8 GPUs (1:1:1:1). Long groups
+# train 56-frame clips at 256x384, short groups 24-frame clips at 384x512, as in AllTracker's Kubric training.
+
+groups:
+  - name: kubric_long
+    ratio: 1.0
+    inference_iters: 3
+    num_workers: 6
+    dataset:
+      _target_: robotrack.training.datasets.kubric.KubricMovifDataset
+      data_root: ${kubric_root}/ce64/kublong
+      crop_size: [256, 384]
+      seq_len: 56
+      traj_per_sample: 256
+      use_augs: true
+      random_seq_len: false
+      random_first_frame: false
+      random_frame_rate: false
+      random_number_traj: false
+      shuffle_frames: false
+      shuffle: true
+      only_first: true
+
+  - name: kubric_short
+    ratio: 1.0
+    inference_iters: 4
+    num_workers: 2
+    dataset:
+      _target_: robotrack.training.datasets.kubric.KubricMovifDataset
+      data_root: ${kubric_root}/kubric_au
+      crop_size: [384, 512]
+      seq_len: 24
+      traj_per_sample: 256
+      use_augs: true
+      random_seq_len: false
+      random_first_frame: false
+      random_frame_rate: false
+      random_number_traj: false
+      shuffle_frames: false
+      shuffle: true
+      only_first: true
+
+  - name: robotrack15m_long
+    sample_salt: franka_pick_long   # the group name in the RoboTracker run: same sample draws
+    ratio: 1.0
+    inference_iters: 3
+    num_workers: 4
+    dataset:
+      _target_: robotrack.training.datasets.robotrack15m.RoboTrack15MDataset
+      data_root: ${robotrack15m_root}
+      manifest: manifests/metadata_long.jsonl
+      crop_size: [256, 384]
+      seq_len: 56
+      traj_per_sample: 256
+      use_augs: true
+      shuffle: true
+
+  - name: robotrack15m_short
+    sample_salt: franka_pick_short   # the group name in the RoboTracker run: same sample draws
+    ratio: 1.0
+    inference_iters: 4
+    num_workers: 4
+    dataset:
+      _target_: robotrack.training.datasets.robotrack15m.RoboTrack15MDataset
+      data_root: ${robotrack15m_root}
+      manifest: manifests/metadata_short.jsonl
+      crop_size: [384, 512]
+      seq_len: 24
+      traj_per_sample: 256
+      use_augs: true
+      shuffle: true
